@@ -55,11 +55,16 @@ namespace TravelRouteRecommendSystemBackEnd.Model
 			CostTime = Marshal.PtrToStringAnsi(route.cost_time);
 			ArrivalType = Marshal.PtrToStringAnsi(route.arrival_type);
 			ArrivalTime = Marshal.PtrToStringAnsi(route.arrival_time);
+			ArrivalCity= Marshal.PtrToStringAnsi(route.arrival_city);
 			ArrivalStation = Marshal.PtrToStringAnsi(route.arrival_station);
 			SecondClassSeatPrice = Marshal.PtrToStringAnsi(route.second_class_seat_price);
 			OneClassSeatPrice = Marshal.PtrToStringAnsi(route.one_class_seat_price);
 			BusinessSeatPrice = Marshal.PtrToStringAnsi(route.business_seat_price);
 			Mileage = Marshal.PtrToStringAnsi(route.mileage);
 		}
+
+        public HSRC()
+        {
+        }
     }
 }

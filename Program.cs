@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog;
+using NLog.Config;
+using NLog.Web;
 
 namespace TravelRouteRecommendSystemBackEnd
 {
@@ -13,6 +16,7 @@ namespace TravelRouteRecommendSystemBackEnd
     {
         public static void Main(string[] args)
         {
+            LogManager.Configuration = new XmlLoggingConfiguration("nlog.config");
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -21,6 +25,7 @@ namespace TravelRouteRecommendSystemBackEnd
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .UseNLog();
     }
 }

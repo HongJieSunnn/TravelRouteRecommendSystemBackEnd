@@ -1,16 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog;
+using NLog.Extensions.Logging;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using TravelRouteRecommendSystemBackEnd.Data;
 using TravelRouteRecommendSystemBackEnd.Model.GetRouteFromCPP;
@@ -37,7 +34,7 @@ namespace TravelRouteRecommendSystemBackEnd
 
             services.AddDbContextPool<MySQLDbContext>(options => options.UseMySql(
                 Configuration.GetConnectionString("ConnectMySQL"),
-                mySqlOptions => mySqlOptions.ServerVersion(new Version(5,7), ServerType.MySql)
+                mySqlOptions => mySqlOptions.ServerVersion(new Version(5, 7), ServerType.MySql)
                 )
             );
         }
@@ -47,7 +44,7 @@ namespace TravelRouteRecommendSystemBackEnd
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler("/error");
             }
             else
             {

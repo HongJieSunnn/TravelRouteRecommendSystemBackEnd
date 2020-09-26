@@ -26,16 +26,16 @@ namespace TravelRouteRecommendSystemBackEnd.Services
         public async Task<RecommendationResult> GetRecommendationRoutesToVehicleObjectsAsync()
         {
             var routes = await GetRouteFromCppAsync();
-           
+
             return await Task.Run(() =>
             {
                 RecommendationResult recommendationResult = new RecommendationResult();
                 recommendationResult.Remark = _remark;
-
+                recommendationResult.Result = new List<List<object>>();
                 for (int i = 0; i < routes.Count(); i++)
                 {
                     int completedRouteSize = routes.ElementAt(i).Count();
-                    recommendationResult.Result[i] = new List<Vehicle>(completedRouteSize);
+                    recommendationResult.Result.Add(new List<object>(completedRouteSize));
                     for (int j = 0; j < completedRouteSize; j++)
                     {
                         var oneRoute = routes.ElementAt(i).ElementAt(j);
@@ -52,7 +52,6 @@ namespace TravelRouteRecommendSystemBackEnd.Services
                                 new Vehicle(vehicleType);//用来抛出异常
                                 break;
                         }
-                        
                     }
                 }
 
@@ -75,53 +74,58 @@ namespace TravelRouteRecommendSystemBackEnd.Services
 
                 List<List<Route>> routes = new List<List<Route>>();
                 UserRequirementFromCSharp userRequirement = (UserRequirementFromCSharp)_userRequirement;
-                
+
                 GetRecommendationsOneGroup(userRequirement, ref routesFromCpp, ref level, ref error_code, ref error, ref remark, ref route_group_nums, ref route_size_in_routes, ref first_route_of_one_size_array);
-                
-                if(level!=0)//出现了异常了
+
+                if (level != 0)//出现了异常了
                 {
                     string errorCodeStr = Marshal.PtrToStringAnsi(error_code);
                     string errorMessage = Marshal.PtrToStringAnsi(error);
                     DealExceptionFromCpp(level, errorCodeStr, errorMessage);
                 }
 
-                if(remark!=null)
+                if (remark != null)
                 {
                     _remark = Marshal.PtrToStringAnsi(remark);
                 }
-                
+
                 int[] first_route_of_one_size_array_managed = new int[route_group_nums];
-                if(first_route_of_one_size_array!=null)
+                if (first_route_of_one_size_array != null)
                 {
                     Marshal.Copy(first_route_of_one_size_array, first_route_of_one_size_array_managed, 0, route_group_nums);
                 }
                 IntPtr[] result = new IntPtr[route_size_in_routes];
-                if(routesFromCpp!=null)
+                if (routesFromCpp != null)
                 {
                     Marshal.Copy(routesFromCpp, result, 0, route_size_in_routes);
+                }
+
+                if(result.Length==0)
+                {
+                    throw new CustomExceptionOfHongJieSun(3, "ROUTE_RESULT_EMPTY", "对不起，该需求暂时没有可推荐的结果");
                 }
 
                 int routeReadStartIndex = 0;//开始读取线路的下标
                 for (int i = 0; i < route_group_nums; i++)
                 {
                     routes.Add(new List<Route>(first_route_of_one_size_array_managed[i]));
-                    if(first_route_of_one_size_array_managed[i]==1)
+                    if (first_route_of_one_size_array_managed[i] == 1)
                     {
-                        routes[i][0] = Marshal.PtrToStructure<Route>(result[routeReadStartIndex]);
+                        routes[i].Add(Marshal.PtrToStructure<Route>(result[routeReadStartIndex]));
                         routeReadStartIndex++;
                         continue;
                     }
-                    else if(first_route_of_one_size_array_managed[i]==2)
+                    else if (first_route_of_one_size_array_managed[i] == 2)
                     {
-                        routes[i][0] = Marshal.PtrToStructure<Route>(result[routeReadStartIndex]);
+                        routes[i].Add(Marshal.PtrToStructure<Route>(result[routeReadStartIndex]));
                         routeReadStartIndex++;
-                        routes[i][1] = Marshal.PtrToStructure<Route>(result[routeReadStartIndex]);
+                        routes[i].Add(Marshal.PtrToStructure<Route>(result[routeReadStartIndex]));
                         routeReadStartIndex++;
                         continue;
                     }
                     else
                     {
-                        throw new CustomExceptionOfHongJieSun(1,"ERROR_SIZE_OF_ONE_ROUTE", $"first_route_of_one_size_array_managed[{i}]={first_route_of_one_size_array_managed[i]}错误的大小，只有1或2正确");
+                        throw new CustomExceptionOfHongJieSun(1, "ERROR_SIZE_OF_ONE_ROUTE", $"first_route_of_one_size_array_managed[{i}]={first_route_of_one_size_array_managed[i]}错误的大小，只有1或2正确");
                     }
                 }
 
@@ -146,7 +150,7 @@ namespace TravelRouteRecommendSystemBackEnd.Services
         [DllImport(@"G:\Sourse\TravelRouteRecommendSystemDLL\x64\Debug\TravelRouteRecommendSystemDLL.dll", EntryPoint = "FreeMemoryOneGroup", CallingConvention = CallingConvention.Cdecl)]
         private static extern void FreeMemoryOneGroup(ref IntPtr routes, ref IntPtr first_route_of_one_size_array, int route_size_in_routes);
 
-        private void DealExceptionFromCpp(int level,string error_code,string error)
+        private void DealExceptionFromCpp(int level, string error_code, string error)
         {
             switch (level)
             {

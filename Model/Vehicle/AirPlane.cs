@@ -60,5 +60,9 @@ namespace TravelRouteRecommendSystemBackEnd.Model
 			Other = Marshal.PtrToStringAnsi(route.other);
 			CostTime = Marshal.PtrToStringAnsi(route.cost_time);
 		}
+
+        public AirPlane()
+        {
+        }
     }
 }

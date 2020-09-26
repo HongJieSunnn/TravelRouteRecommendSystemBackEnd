@@ -50,7 +50,7 @@ namespace TravelRouteRecommendSystemBackEnd.Model
 			PlaneType = Marshal.PtrToStringAnsi(route.plane_type);
 			StartTime = Marshal.PtrToStringAnsi(route.start_time);
 			StartAirport = Marshal.PtrToStringAnsi(route.start_station);
-			StartCity = Marshal.PtrToStringAnsi(route.start_station);
+			StartCity = Marshal.PtrToStringAnsi(route.start_city);
 			ArrivalTime = Marshal.PtrToStringAnsi(route.arrival_time);
 			ArrivalAirport = Marshal.PtrToStringAnsi(route.arrival_station);
 			ArrivalCity = Marshal.PtrToStringAnsi(route.arrival_city);

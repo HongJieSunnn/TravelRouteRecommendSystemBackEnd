@@ -135,7 +135,7 @@ namespace TravelRouteRecommendSystemBackEnd.Services
             });
         }
 
-        [DllImport(@"G:\Sourse\TravelRouteRecommendSystemDLL\x64\Debug\TravelRouteRecommendSystemDLL.dll", EntryPoint = "GetRecommendationsOneGroup", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("TravelRouteRecommendSystemDLL.dll", EntryPoint = "GetRecommendationsOneGroup", CallingConvention = CallingConvention.Cdecl)]
         private static extern void GetRecommendationsOneGroup(
             UserRequirementFromCSharp reqirement,
             ref IntPtr routes,
@@ -147,7 +147,7 @@ namespace TravelRouteRecommendSystemBackEnd.Services
             ref int route_size_in_routes,
             ref IntPtr first_route_of_one_size_array);
 
-        [DllImport(@"G:\Sourse\TravelRouteRecommendSystemDLL\x64\Debug\TravelRouteRecommendSystemDLL.dll", EntryPoint = "FreeMemoryOneGroup", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("TravelRouteRecommendSystemDLL.dll", EntryPoint = "FreeMemoryOneGroup", CallingConvention = CallingConvention.Cdecl)]
         private static extern void FreeMemoryOneGroup(ref IntPtr routes, ref IntPtr first_route_of_one_size_array, int route_size_in_routes);
 
         private void DealExceptionFromCpp(int level, string error_code, string error)

@@ -3,18 +3,42 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelRouteRecommendSystemBackEnd", "TravelRouteRecommendSystemBackEnd.csproj", "{6ABF4F40-CCB4-4FDF-A64A-B285C6E4E20A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TravelRouteRecommendSystemBackEnd", "TravelRouteRecommendSystemBackEnd.csproj", "{6ABF4F40-CCB4-4FDF-A64A-B285C6E4E20A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TravelRouteRecommendSystemDLL", "..\TravelRouteRecommendSystemDLL\TravelRouteRecommendSystemDLL\TravelRouteRecommendSystemDLL.vcxproj", "{4E567037-110B-4414-B068-707E126D36E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6ABF4F40-CCB4-4FDF-A64A-B285C6E4E20A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6ABF4F40-CCB4-4FDF-A64A-B285C6E4E20A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ABF4F40-CCB4-4FDF-A64A-B285C6E4E20A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6ABF4F40-CCB4-4FDF-A64A-B285C6E4E20A}.Debug|x64.Build.0 = Debug|Any CPU
+		{6ABF4F40-CCB4-4FDF-A64A-B285C6E4E20A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6ABF4F40-CCB4-4FDF-A64A-B285C6E4E20A}.Debug|x86.Build.0 = Debug|Any CPU
 		{6ABF4F40-CCB4-4FDF-A64A-B285C6E4E20A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6ABF4F40-CCB4-4FDF-A64A-B285C6E4E20A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ABF4F40-CCB4-4FDF-A64A-B285C6E4E20A}.Release|x64.ActiveCfg = Release|Any CPU
+		{6ABF4F40-CCB4-4FDF-A64A-B285C6E4E20A}.Release|x64.Build.0 = Release|Any CPU
+		{6ABF4F40-CCB4-4FDF-A64A-B285C6E4E20A}.Release|x86.ActiveCfg = Release|Any CPU
+		{6ABF4F40-CCB4-4FDF-A64A-B285C6E4E20A}.Release|x86.Build.0 = Release|Any CPU
+		{4E567037-110B-4414-B068-707E126D36E5}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{4E567037-110B-4414-B068-707E126D36E5}.Debug|x64.ActiveCfg = Debug|x64
+		{4E567037-110B-4414-B068-707E126D36E5}.Debug|x64.Build.0 = Debug|x64
+		{4E567037-110B-4414-B068-707E126D36E5}.Debug|x86.ActiveCfg = Debug|Win32
+		{4E567037-110B-4414-B068-707E126D36E5}.Debug|x86.Build.0 = Debug|Win32
+		{4E567037-110B-4414-B068-707E126D36E5}.Release|Any CPU.ActiveCfg = Release|Win32
+		{4E567037-110B-4414-B068-707E126D36E5}.Release|x64.ActiveCfg = Release|x64
+		{4E567037-110B-4414-B068-707E126D36E5}.Release|x64.Build.0 = Release|x64
+		{4E567037-110B-4414-B068-707E126D36E5}.Release|x86.ActiveCfg = Release|Win32
+		{4E567037-110B-4414-B068-707E126D36E5}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

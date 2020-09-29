@@ -15,7 +15,7 @@ namespace TravelRouteRecommendSystemBackEnd.Controllers
         {
             _logger = logger;
         }
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> GetRecommendationRoutes([FromBody] UserRequirement userRequirement)
         {
             _logger.LogInformation($"\n输入:{userRequirement}");

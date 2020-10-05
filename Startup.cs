@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Net.Http.Headers;
 using NLog;
 using NLog.Extensions.Logging;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
@@ -30,17 +29,6 @@ namespace TravelRouteRecommendSystemBackEnd
         {
             services.AddControllers();
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy(name: "MyPolicy",
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin()
-                               .AllowAnyHeader()
-                               .WithMethods("GET");
-                    });
-            });
-
             services.AddScoped<IUserRequirementFromCSharp, UserRequirementFromCSharp>();
             services.AddScoped<IRecommendationsRepository, RecomendationsRepository>();
 
@@ -62,7 +50,7 @@ namespace TravelRouteRecommendSystemBackEnd
             {
                 app.UseExceptionHandler("/error");
             }
-            app.UseCors("MyPolicy");
+
             app.UseHttpsRedirection();
 
             app.UseRouting();

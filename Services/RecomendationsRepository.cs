@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TravelRouteRecommendSystemBackEnd.CustomComponents;
@@ -12,11 +13,13 @@ namespace TravelRouteRecommendSystemBackEnd.Services
     public class RecomendationsRepository : IRecommendationsRepository
     {
         private IUserRequirementFromCSharp _userRequirement;
+        private IHttpClientFactory _httpClient;
         private string _remark;
 
-        public RecomendationsRepository(IUserRequirementFromCSharp userRequirement)
+        public RecomendationsRepository(IUserRequirementFromCSharp userRequirement,IHttpClientFactory httpClientFactory)
         {
             _userRequirement = userRequirement;
+            _httpClient = httpClientFactory;
         }
         public async Task<RecommendationResult> GetRecommendationsAsync()
         {
@@ -26,7 +29,7 @@ namespace TravelRouteRecommendSystemBackEnd.Services
         public async Task<RecommendationResult> GetRecommendationRoutesToVehicleObjectsAsync()
         {
             var routes = await GetRouteFromCppAsync();
-
+            var directedDistance = await new HttpRequestMapRepository(_httpClient, null).GetDirectedDistanceAsync((UserRequirementFromCSharp)_userRequirement);
             return await Task.Run(() =>
             {
                 RecommendationResult recommendationResult = new RecommendationResult();
@@ -46,7 +49,7 @@ namespace TravelRouteRecommendSystemBackEnd.Services
                                 recommendationResult.Result[i].Add(new HSRC(oneRoute));
                                 break;
                             case "AIRPLANE_TYPE":
-                                recommendationResult.Result[i].Add(new AirPlane(oneRoute));
+                                recommendationResult.Result[i].Add(new AirPlane(oneRoute,directedDistance));
                                 break;
                             default:
                                 new Vehicle(vehicleType);//用来抛出异常

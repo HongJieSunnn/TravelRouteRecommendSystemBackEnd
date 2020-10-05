@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using TravelRouteRecommendSystemBackEnd.Services;
 
 namespace TravelRouteRecommendSystemBackEnd.Model.GetRouteFromCPP
 {
@@ -30,6 +32,7 @@ namespace TravelRouteRecommendSystemBackEnd.Model.GetRouteFromCPP
 		[Required]
 		[StringLength(maximumLength: 16, MinimumLength = 16,ErrorMessage = "格式必须为yyyy-mm-dd hh:mm 长度不够")]
 		public string StartTime { get; set; }
+		[Required]
 		[StringLength(maximumLength: 16, MinimumLength = 16, ErrorMessage = "格式必须为yyyy-mm-dd hh:mm 长度不够")]
 		public string ArriveTime { get; set; }
 		[Required]
@@ -39,13 +42,14 @@ namespace TravelRouteRecommendSystemBackEnd.Model.GetRouteFromCPP
 		[Required]
 		public string TransitType { get; set; }
 		[Required]
-		[Range(1,20000)]
+		[Range(0,20000)]
 		public int Distances { get; set; }
 		[StringLength(maximumLength:35)]
 		public string Remark { get; set; }
 
-		public void UserRequirementToUserRequirementFromCSharp(ref UserRequirementFromCSharp userRequirementFromCSharp)
+		public async Task<UserRequirementFromCSharp> UserRequirementToUserRequirementFromCSharp(IHttpClientFactory httpClientFactory)
         {
+			UserRequirementFromCSharp userRequirementFromCSharp = new UserRequirementFromCSharp();
 			userRequirementFromCSharp.start_cities = StartCities;
 			userRequirementFromCSharp.arrive_cities = ArriveCities;
 			userRequirementFromCSharp.city_num = CityNum;
@@ -54,8 +58,14 @@ namespace TravelRouteRecommendSystemBackEnd.Model.GetRouteFromCPP
 			userRequirementFromCSharp.travel_type = TravelType;
 			userRequirementFromCSharp.vehicle_type = VehicleType;
 			userRequirementFromCSharp.transit_type = TransitType;
+			if(Distances==0)
+            {
+				Distances = await new HttpRequestMapRepository(httpClientFactory, this).GetDistanceAsync();
+            }
 			userRequirementFromCSharp.distances = Distances;
 			userRequirementFromCSharp.remark = Remark;
+
+			return userRequirementFromCSharp;
 		}
 
         public override string ToString()

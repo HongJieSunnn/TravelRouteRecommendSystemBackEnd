@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TravelRouteRecommendSystemBackEnd.Model.GetRouteFromCPP;
@@ -11,20 +12,20 @@ namespace TravelRouteRecommendSystemBackEnd.Controllers
     public class RecommendationsController : ControllerBase
     {
         private readonly ILogger _logger;
-        public RecommendationsController(ILogger<RecomendationsRepository> logger)
+        private readonly IHttpClientFactory _httpClient;
+        public RecommendationsController(ILogger<RecomendationsRepository> logger,IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
+            _httpClient = httpClientFactory;
         }
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> GetRecommendationRoutes([FromBody] UserRequirement userRequirement)
         {
             _logger.LogInformation($"\n输入:{userRequirement}");
-            UserRequirementFromCSharp userRequirementFromCSharp = new UserRequirementFromCSharp();
-            userRequirement.UserRequirementToUserRequirementFromCSharp(ref userRequirementFromCSharp);
-            var rec = new RecomendationsRepository(userRequirementFromCSharp);
+            var userRequirementFromCSharp = await userRequirement.UserRequirementToUserRequirementFromCSharp(_httpClient);
 
+            var rec = new RecomendationsRepository(userRequirementFromCSharp,_httpClient);
             var res = await rec.GetRecommendationsAsync();
-
 
             return Ok(res);
         }

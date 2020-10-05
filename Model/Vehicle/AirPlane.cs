@@ -22,7 +22,8 @@ namespace TravelRouteRecommendSystemBackEnd.Model
 		public string Discount { get; set; }
 		public string Other { get; set; }
 		public string CostTime { get; set; }
-		public AirPlane(
+        public int Mileage { get; set; }
+        public AirPlane(
 			string vehicleType,
 			string planeId,string planeType,
 			string startTime,string startAirport,string startCity,
@@ -44,7 +45,7 @@ namespace TravelRouteRecommendSystemBackEnd.Model
 			CostTime = costTime;
 		}
 
-		public AirPlane(Route route) : base(Marshal.PtrToStringAnsi(route.vehicle_type))
+		public AirPlane(Route route,double directedDistance) : base(Marshal.PtrToStringAnsi(route.vehicle_type))
         {
 			PlaneId = Marshal.PtrToStringAnsi(route.id);
 			PlaneType = Marshal.PtrToStringAnsi(route.plane_type);
@@ -59,6 +60,7 @@ namespace TravelRouteRecommendSystemBackEnd.Model
 			Discount = Marshal.PtrToStringAnsi(route.discount);
 			Other = Marshal.PtrToStringAnsi(route.other);
 			CostTime = Marshal.PtrToStringAnsi(route.cost_time);
+			Mileage = (int)directedDistance;
 		}
 
         public AirPlane()

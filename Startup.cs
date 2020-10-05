@@ -29,6 +29,19 @@ namespace TravelRouteRecommendSystemBackEnd
         {
             services.AddControllers();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "MyPolicy",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyHeader()
+                               .WithMethods("GET");
+                    });
+            });
+
+            services.AddHttpClient();
+            services.AddScoped<IHttpRequestRepository, HttpRequestMapRepository>();
             services.AddScoped<IUserRequirementFromCSharp, UserRequirementFromCSharp>();
             services.AddScoped<IRecommendationsRepository, RecomendationsRepository>();
 
@@ -50,6 +63,8 @@ namespace TravelRouteRecommendSystemBackEnd
             {
                 app.UseExceptionHandler("/error");
             }
+
+            app.UseCors("MyPolicy");
 
             app.UseHttpsRedirection();
 

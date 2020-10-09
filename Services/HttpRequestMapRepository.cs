@@ -24,8 +24,11 @@ namespace TravelRouteRecommendSystemBackEnd.Services
         }
         public async Task<double> GetDirectedDistanceAsync()
         {
-            var startCityLngAndLat = await GetLongitudeAndLatitudeDictionaryAsync(_userRequirement.StartCities);
-            var arrivalCityLngAndLat = await GetLongitudeAndLatitudeDictionaryAsync(_userRequirement.ArriveCities);
+            var startCityLngAndLatTask = GetLongitudeAndLatitudeDictionaryAsync(_userRequirement.StartCities);
+            var arrivalCityLngAndLatTask = GetLongitudeAndLatitudeDictionaryAsync(_userRequirement.ArriveCities);
+
+            var startCityLngAndLat = await startCityLngAndLatTask;
+            var arrivalCityLngAndLat = await arrivalCityLngAndLatTask;
 
             double R = 6371;//地球半径
 
@@ -36,8 +39,11 @@ namespace TravelRouteRecommendSystemBackEnd.Services
 
         public async Task<double> GetDirectedDistanceAsync(UserRequirementFromCSharp userRequirement)
         {
-            var startCityLngAndLat = await GetLongitudeAndLatitudeDictionaryAsync(userRequirement.start_cities);
-            var arrivalCityLngAndLat = await GetLongitudeAndLatitudeDictionaryAsync(userRequirement.arrive_cities);
+            var startCityLngAndLatTask =GetLongitudeAndLatitudeDictionaryAsync(userRequirement.start_cities);
+            var arrivalCityLngAndLatTask =GetLongitudeAndLatitudeDictionaryAsync(userRequirement.arrive_cities);
+
+            var startCityLngAndLat = await startCityLngAndLatTask;
+            var arrivalCityLngAndLat = await arrivalCityLngAndLatTask;
 
             double R = 6371;//地球半径
 
@@ -48,40 +54,38 @@ namespace TravelRouteRecommendSystemBackEnd.Services
 
         public async Task<int> GetDistanceAsync()
         {
-            return await Task.Run(async () =>
+            var startCityLngAndLatTask = GetLongitudeAndLatitudeStringAsync(_userRequirement.StartCities);
+            var arrivalCityLngAndLatTask = GetLongitudeAndLatitudeStringAsync(_userRequirement.ArriveCities);
+            var startCityLngAndLat = await startCityLngAndLatTask;
+            var arrivalCityLngAndLat = await arrivalCityLngAndLatTask;
+
+            var request = new HttpRequestMessage(HttpMethod.Get, $"http://api.map.baidu.com/routematrix/v2/driving?output=json&origins={startCityLngAndLat}&destinations={arrivalCityLngAndLat}&tactics=10&ak=FbB269nBtfw1SmdgaNQXAXFhNeMXNzo8");
+            var client = _httpClient.CreateClient();
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
             {
-                var startCityLngAndLat = await GetLongitudeAndLatitudeStringAsync(_userRequirement.StartCities);
-                var arrivalCityLngAndLat = await GetLongitudeAndLatitudeStringAsync(_userRequirement.ArriveCities);
+                var responseStr = await response.Content.ReadAsStringAsync();
+                var responseObject = JObject.Parse(responseStr);
 
-                var request = new HttpRequestMessage(HttpMethod.Get, $"http://api.map.baidu.com/routematrix/v2/driving?output=json&origins={startCityLngAndLat}&destinations={arrivalCityLngAndLat}&tactics=10&ak=FbB269nBtfw1SmdgaNQXAXFhNeMXNzo8");
-                var client = _httpClient.CreateClient();
-
-                var response = await client.SendAsync(request);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseStr = await response.Content.ReadAsStringAsync();
-                    var responseObject = JObject.Parse(responseStr);
-
-                    return (int)responseObject["result"][0]["distance"]["value"].ToObject<double>() / 1000;
-                }
-                else
-                {
-                    throw new CustomExceptionOfHongJieSun(1, "ERROR_WHEN_HTTP_REQUEST_TO_GET_DISTANCE", $"获取{_userRequirement.StartCities}-{_userRequirement.ArriveCities}距离失败");
-                }
-            });
+                return (int)responseObject["result"][0]["distance"]["value"].ToObject<double>() / 1000;
+            }
+            else
+            {
+                throw new CustomExceptionOfHongJieSun(1, "ERROR_WHEN_HTTP_REQUEST_TO_GET_DISTANCE", $"获取{_userRequirement.StartCities}-{_userRequirement.ArriveCities}距离失败");
+            }
         }
 
         public async Task<Dictionary<string, double>> GetLongitudeAndLatitudeDictionaryAsync(string position)
         {
+            Dictionary<string, double> lngAndLat = new Dictionary<string, double>();
+            var request = new HttpRequestMessage(HttpMethod.Get, $"http://api.map.baidu.com/geocoding/v3/?address={position}&output=json&ak=FbB269nBtfw1SmdgaNQXAXFhNeMXNzo8");
+            var client = _httpClient.CreateClient();
+
+            var response = await client.SendAsync(request);
             return await Task.Run(async () =>
             {
-                Dictionary<string, double> lngAndLat = new Dictionary<string, double>();
-                var request = new HttpRequestMessage(HttpMethod.Get, $"http://api.map.baidu.com/geocoding/v3/?address={position}&output=json&ak=FbB269nBtfw1SmdgaNQXAXFhNeMXNzo8");
-                var client = _httpClient.CreateClient();
-
-                var response = await client.SendAsync(request);
-
                 if (response.IsSuccessStatusCode)
                 {
                     var responseStr = await response.Content.ReadAsStringAsync();
@@ -101,13 +105,12 @@ namespace TravelRouteRecommendSystemBackEnd.Services
 
         public async Task<string> GetLongitudeAndLatitudeStringAsync(string position)
         {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"http://api.map.baidu.com/geocoding/v3/?address={position}&output=json&ak=FbB269nBtfw1SmdgaNQXAXFhNeMXNzo8");
+            var client = _httpClient.CreateClient();
+
+            var response = await client.SendAsync(request);
             return await Task.Run(async () =>
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, $"http://api.map.baidu.com/geocoding/v3/?address={position}&output=json&ak=FbB269nBtfw1SmdgaNQXAXFhNeMXNzo8");
-                var client = _httpClient.CreateClient();
-
-                var response = await client.SendAsync(request);
-
                 if (response.IsSuccessStatusCode)
                 {
                     var responseStr = await response.Content.ReadAsStringAsync();
